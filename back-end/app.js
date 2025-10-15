@@ -1,7 +1,8 @@
-import express from "express";
-import dotenv from "dotenv";
-import mongoose from 'mongoose';
-import User from './Users.js';
+import express from "express"
+import cors from 'cors'
+import dotenv from "dotenv"
+import mongoose from 'mongoose'
+import User from './Users.js'
 
 dotenv.config();
 
@@ -9,6 +10,7 @@ const app = express();
 const PORT = 8081;
 
 app.use(express.json()); // tratamento
+app.use(cors())
 
 // Conexão com DB
 const connetDB = async () => {
@@ -29,6 +31,9 @@ app.post("/users", async (req, res) => {
         const newUser = await User.create(req.body);
         res.status(201).json(newUser);
     } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({message: "E-mail já cadastrado."});
+        }
         res.status(500).json({ massage: "Erro ao criar usuário", error: error.massage });
     }
 });
