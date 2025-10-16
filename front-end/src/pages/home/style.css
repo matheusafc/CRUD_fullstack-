@@ -7,10 +7,31 @@
 
 h1 {
   color: #fff;
-  font-size: 32px;
+  font-size: 30px;
 }
 
-form {
+input {
+  border: none;
+  border-radius: 30px;
+  height: 40px;
+  background-color: #dededf;
+  color: #000;
+  font-size: 16px;
+  padding-left: 10px;
+  outline: none;
+}
+
+button {
+  height: 40px;
+  border-radius: 30px;
+  background-color: #e6e2e2;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+
+}
+
+.principalForm {
   display: flex;
   flex-direction: column;
   gap: 25px;
@@ -22,32 +43,11 @@ form {
   margin-bottom: 20px;
   font-size: 14px;
 
-
-  & button {
-    height: 30px;
-    border-radius: 30px;
-    background-color: #e6e2e2;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
   & button:hover {
     opacity: 0.8;
     background-color: #0dff4ac0
   }
 
-  & input {
-    border: 1px solid #272729;
-    border-radius: 30px;
-    height: 40px;
-    background-color: #dededf;
-    color: #000;
-    font-size: 16px;
-    padding-left: 10px;
-    outline: none;
-    
-  }
 }
 
 .card {
@@ -67,12 +67,13 @@ form {
       font-weight: normal;
     }
   }
+
   & button {
     background-color: transparent;
     border: none;
     cursor: pointer;
     display: flex;
-    
+
 
     & img {
       margin: 5px;
@@ -80,7 +81,70 @@ form {
       height: 45px;
     }
   }
+
   & button:hover {
     opacity: 0.5;
   }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background-color: #303a70;
+  width: 400px;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  padding-top: 12px;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 25px;
+  border-radius: 10px;
+  background-color: #303a70;
+  width: 400px;
+  margin-bottom: 20px;
+  font-size: 14px;
+
+}
+
+.modal-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btnsave{
+  background-color: #0e812bc0
+}
+.btnsave:hover{
+  opacity: 0.8;
+  background-color: rgb(15, 255, 35);
+}
+.btncancel {
+  background-color: rgba(168, 31, 31, 0.658);
+}
+.btncancel:hover{
+  opacity: 0.8;
+  background-color: rgb(255, 8, 8);
 }

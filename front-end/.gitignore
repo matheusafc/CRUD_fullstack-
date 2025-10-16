@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Vite / dev
+.vite
+node_modules/
+.env
+.env.local
+build/
+coverage/

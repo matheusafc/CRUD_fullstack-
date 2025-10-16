@@ -1,25 +1,39 @@
-import React, { useEffect, useState, useRef } from 'react'
-import './style.css'
-import Trash from '../../assets/trash.svg'
-import Edit from '../../assets/edit.svg'
-import api from '../../services/api'
-
+import React, { useEffect, useState, useRef } from "react";
+import "./style.css";
+import Trash from "../../assets/trash.svg";
+import Edit from "../../assets/edit.svg";
+import api from "../../services/api";
 
 function Home() {
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState([]);
 
-  const inputName = useRef()
-  const inputEmail = useRef()
-  const inputOccupation = useRef()
+  // --- Estados para o Modal ---
+  const [isModalOpen, setIsModalOpen] = useState(false); // 1. Controla se o modal está visível
+  const [userToEdit, setUserToEdit] = useState(null); // 2. Guarda o usuário que está sendo editado
+  const [modalFormData, setModalFormData] = useState({
+    // 3. Guarda os dados do formulário DO MODAL
+    name: "",
+    email: "",
+    occupation: "",
+  });
 
-  // function listar todos users cadastrados
+  // Refs para o formulário de cadastro
+  const inputName = useRef();
+  const inputEmail = useRef();
+  const inputOccupation = useRef();
+
+  // function listar registros
   async function getUsers() {
-    const usersApi = await api.get('/users')
-
-    setUsers(usersApi.data)
+    const usersApi = await api.get("/users");
+    setUsers(usersApi.data);
   }
 
-  // function crir usuario com feedback e validação de campos
+  function validedEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
+    return regex.test(email);
+  }
+
+  // function create
   async function createUser() {
     const name = inputName.current.value;
     const email = inputEmail.current.value;
@@ -28,36 +42,36 @@ function Home() {
     if (!name || !email || !occupation) {
       alert("Por favor, preencha todos os campos.");
       return;
-    } try {
-      await api.post('/users', {
-        name: name,
-        email: email,
-        occupation: occupation,
-      });
-
+    }
+    if (!validedEmail(email)) {
+      alert("Por favor digite um e-mail válido");
+      return;
+    }
+    try {
+      await api.post("/users", { name, email, occupation });
       alert("Usuário cadastrado com sucesso.");
       getUsers();
-
-      inputName.current.value = '';
-      inputEmail.current.value = '';
-      inputOccupation.current.value = '';
-
+      inputName.current.value = "";
+      inputEmail.current.value = "";
+      inputOccupation.current.value = "";
     } catch (error) {
       if (error.response && error.response.status === 409) {
         alert("E-mail já cadastrado.");
-        return;
+      } else {
+        console.error("Erro ao cadastrar usuário.", error);
+        alert("Erro ao cadastrar usuário.");
       }
-      console.error("Erro ao cadastrar usuário.", error);
-      alert("Erro ao cadastrar usuário.");
     }
   }
 
-  // function delete com confirmação e feedback
+  // function delete
   async function deleteUsers(id) {
-    const userConfirmed = window.confirm("Deseja realmente excluir este usuário?");
-    if (!userConfirmed) {
-      return;
-    } try {
+    const userConfirmed = window.confirm(
+      "Deseja realmente excluir este usuário?"
+    );
+    if (!userConfirmed) return;
+
+    try {
       await api.delete(`/users/${id}`);
       alert("Usuário excluido com sucesso.");
       getUsers();
@@ -67,52 +81,93 @@ function Home() {
     }
   }
 
-  // function update com feedback
-  async function updateUsers(id) {
+  // --- Funções do Modal ---
+
+  // 4. Abre o modal e preenche os dados do formulário dele
+  function openEditModal(user) {
+    setUserToEdit(user);
+    setModalFormData({
+      name: user.name,
+      email: user.email,
+      occupation: user.occupation,
+    });
+    setIsModalOpen(true);
+  }
+
+  // 5. Fecha o modal e limpa o usuário selecionado
+  function closeEditModal() {
+    setIsModalOpen(false);
+    setUserToEdit(null);
+  }
+
+  // 6. Lida com as mudanças nos inputs DO MODAL
+  function handleModalFormChange(event) {
+    const { name, value } = event.target;
+    setModalFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }
+
+  // 7. Função que é chamada ao submeter o formulário DO MODAL
+  async function handleUpdateSubmit(event) {
+    event.preventDefault(); // Previne o recarregamento da página
+    if (!userToEdit) return;
+
     try {
-      await api.put(`/users/${id}`, {
-        name: inputName.current.value,
-        email: inputEmail.current.value,
-        occupation: inputOccupation.current.value,
-      })
+      await api.put(`/users/${userToEdit._id}`, {
+        name: modalFormData.name,
+        email: modalFormData.email,
+        occupation: modalFormData.occupation,
+      });
       alert("Usuário atualizado com sucesso.");
-      getUsers()
+      getUsers();
+      closeEditModal(); // Fecha o modal após o sucesso
     } catch (error) {
       console.error("Erro ao atualizar usuário.", error);
       alert("Erro ao atualizar usuário.");
     }
   }
 
-
-
   useEffect(() => {
-    getUsers()
-  }, [])
+    getUsers();
+  }, []);
 
   return (
-
-    <div className='container'>
-      <form>
+    <div className="container">
+      <form className="principalForm">
         <h1>Cadastrar Usuário</h1>
-        <input placeholder="Nome" name='name' type='text' ref={inputName}></input>
-        <input placeholder="E-mail" name='email' type='email' ref={inputEmail}></input>
-        <input placeholder="Cargo" name='occupation' type='text' ref={inputOccupation}></input>
-        <button type='button' onClick={createUser}>Cadastrar</button>
-        <input placeholder="Buscar por E-mail" name='buscar' type='text'></input>
-        <button type='button'>Buscar</button>
-
+        <input placeholder="Nome" name="name" type="text" ref={inputName} />
+        <input
+          placeholder="E-mail"
+          name="email"
+          type="email"
+          ref={inputEmail}
+        />
+        <input
+          placeholder="Cargo"
+          name="occupation"
+          type="text"
+          ref={inputOccupation}
+        />
+        <button type="button" onClick={createUser}>
+          Cadastrar
+        </button>
       </form>
 
-      {users.map((user) =>
-        <div key={user._id} className='card'>
+      {users.map((user) => (
+        <div key={user._id} className="card">
           <div>
             <p>Nome: {user.name} </p>
             <p>E-mail: {user.email}</p>
             <p>Cargo: {user.occupation}</p>
-            <p>Cadastrado em: {new Date(user.dataCriacao).toLocaleDateString()}</p>
+            <p>
+              Cadastrado em: {new Date(user.dataCriacao).toLocaleDateString()}
+            </p>
           </div>
-          <div className='action-buttons'>
-            <button onClick={() => updateUsers(user._id)}>
+          <div className="action-buttons">
+            {/* 8. Botão de editar agora chama a função para abrir o modal */}
+            <button onClick={() => openEditModal(user)}>
               <img src={Edit} alt="editIcon" />
             </button>
             <button onClick={() => deleteUsers(user._id)}>
@@ -120,10 +175,53 @@ function Home() {
             </button>
           </div>
         </div>
+      ))}
+
+      {/* 9. JSX do Modal (renderizado condicionalmente) */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h1>Editar Usuário</h1>
+            <form className="modalForm" onSubmit={handleUpdateSubmit}>
+              <input
+                placeholder="Nome"
+                name="name"
+                type="text"
+                value={modalFormData.name}
+                onChange={handleModalFormChange}
+              />
+              <input
+                placeholder="E-mail"
+                name="email"
+                type="email"
+                value={modalFormData.email}
+                onChange={handleModalFormChange}
+              />
+              <input
+                placeholder="Cargo"
+                name="occupation"
+                type="text"
+                value={modalFormData.occupation}
+                onChange={handleModalFormChange}
+              />
+              <div className="modal-buttons">
+                <button className="btnsave" type="submit">
+                  Salvar Alterações
+                </button>
+                <button
+                  className="btncancel"
+                  type="button"
+                  onClick={closeEditModal}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
-
-  )
+  );
 }
 
-export default Home
+export default Home;

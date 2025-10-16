@@ -1,4 +1,26 @@
 {
+  "name": "back-end",
+  "private": false,
+  "version": "1.0.0",
+  "description": "Projeto Fullstack de um CRUD de usuários.",
+  "author": {
+    "name": "Matheus A. Farias Cioca",
+    "url": "https://github.com/matheusafc"
+  },
+  "homepage": "",
+  "keywords": [
+    "fullstack",
+    "react",
+    "node",
+    "mongo"
+  ],
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matheusafc/CRUD_fullstack-"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
