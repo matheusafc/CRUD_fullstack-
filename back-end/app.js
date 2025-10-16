@@ -10,7 +10,7 @@ const app = express();
 const PORT = 8081;
 
 app.use(express.json()); // tratamento
-app.use(cors())
+app.use(cors());
 
 // Conexão com DB
 const connetDB = async () => {

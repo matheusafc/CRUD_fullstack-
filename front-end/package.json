@@ -1,8 +1,14 @@
 {
   "name": "front-end",
-  "private":false,
+  "private": false,
   "version": "1.0.0",
   "type": "module",
+  "description": "Projeto Fullstack de um CRUD de usuários.",
+  "author": {
+    "name": "Matheus A. Farias Cioca",
+    "url": "https://github.com/matheusafc"
+  },
+  "homepage": "https://crud-fullstack-frontend-sooty.vercel.app/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

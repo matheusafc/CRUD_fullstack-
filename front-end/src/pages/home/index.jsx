@@ -7,11 +7,10 @@ import api from "../../services/api";
 function Home() {
   const [users, setUsers] = useState([]);
 
-  // --- Estados para o Modal ---
-  const [isModalOpen, setIsModalOpen] = useState(false); // 1. Controla se o modal está visível
-  const [userToEdit, setUserToEdit] = useState(null); // 2. Guarda o usuário que está sendo editado
+  // Estados para o Modal 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [userToEdit, setUserToEdit] = useState(null); 
   const [modalFormData, setModalFormData] = useState({
-    // 3. Guarda os dados do formulário DO MODAL
     name: "",
     email: "",
     occupation: "",
@@ -27,7 +26,7 @@ function Home() {
     const usersApi = await api.get("/users");
     setUsers(usersApi.data);
   }
-
+  // fuction validar email
   function validedEmail(email) {
     const regex = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
     return regex.test(email);
@@ -81,9 +80,9 @@ function Home() {
     }
   }
 
-  // --- Funções do Modal ---
+ 
 
-  // 4. Abre o modal e preenche os dados do formulário dele
+  // function modal (abrir e preencher)
   function openEditModal(user) {
     setUserToEdit(user);
     setModalFormData({
@@ -94,13 +93,13 @@ function Home() {
     setIsModalOpen(true);
   }
 
-  // 5. Fecha o modal e limpa o usuário selecionado
+  // function fechar modal
   function closeEditModal() {
     setIsModalOpen(false);
     setUserToEdit(null);
   }
 
-  // 6. Lida com as mudanças nos inputs DO MODAL
+  // function para mudança dos inputs
   function handleModalFormChange(event) {
     const { name, value } = event.target;
     setModalFormData((prevState) => ({
@@ -109,9 +108,9 @@ function Home() {
     }));
   }
 
-  // 7. Função que é chamada ao submeter o formulário DO MODAL
+  // function para atualizar os dados
   async function handleUpdateSubmit(event) {
-    event.preventDefault(); // Previne o recarregamento da página
+    event.preventDefault(); 
     if (!userToEdit) return;
 
     try {
@@ -122,7 +121,7 @@ function Home() {
       });
       alert("Usuário atualizado com sucesso.");
       getUsers();
-      closeEditModal(); // Fecha o modal após o sucesso
+      closeEditModal(); 
     } catch (error) {
       console.error("Erro ao atualizar usuário.", error);
       alert("Erro ao atualizar usuário.");
@@ -166,7 +165,6 @@ function Home() {
             </p>
           </div>
           <div className="action-buttons">
-            {/* 8. Botão de editar agora chama a função para abrir o modal */}
             <button onClick={() => openEditModal(user)}>
               <img src={Edit} alt="editIcon" />
             </button>
@@ -177,7 +175,7 @@ function Home() {
         </div>
       ))}
 
-      {/* 9. JSX do Modal (renderizado condicionalmente) */}
+      
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
